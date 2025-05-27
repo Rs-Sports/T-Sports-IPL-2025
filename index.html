@@ -1,37 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>BDIX Live Stream</title>
-  <style>
-    body {
-      background-color: #000;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    video {
-      width: 90%;
-      max-width: 720px;
-      border: 3px solid #00ff00;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #00ff00;
-    }
-  </style>
-</head>
-<body>
-  <video id="video" controls autoplay></video>
-
+  <meta charset="utf-8">
+  <title>LIVE Stream</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body style="margin:0; background:#000; display:flex; justify-content:center; align-items:center; height:100vh;">
+
+  <video id="video" controls autoplay style="width:90%; max-width:800px; border:2px solid green;"></video>
+
   <script>
-    const video = document.getElementById('video');
-    const videoSrc = 'https://tv.bdixtv24.com/sports/m3u8.php/skyscric.m3u8';
+    var video = document.getElementById('video');
+    var videoSrc = 'https://m3.merichunidya.com:999/hls/star1in.m3u8?md5=3TmcYsZW-j1w054Y02GP3A&expires=1748339393';
 
     if (Hls.isSupported()) {
-      const hls = new Hls();
+      var hls = new Hls();
       hls.loadSource(videoSrc);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
@@ -42,9 +25,8 @@
       video.addEventListener('loadedmetadata', function () {
         video.play();
       });
-    } else {
-      alert("Your browser doesn't support HLS streaming.");
     }
   </script>
+
 </body>
 </html>
