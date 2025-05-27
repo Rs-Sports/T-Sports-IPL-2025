@@ -2,34 +2,54 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>T Sports Live Stream</title>
+  <title>Live TV Player</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     body {
       background-color: #000;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       margin: 0;
-      color: #fff;
       font-family: sans-serif;
+      color: #fff;
     }
-    video {
+    .video-container {
+      position: relative;
       width: 90%;
       max-width: 800px;
-      border: 5px solid #00ff00;
+    }
+    video {
+      width: 100%;
+      border: 4px solid #00ff00;
       border-radius: 12px;
-      background: #000;
+    }
+    .live-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: red;
+      color: white;
+      padding: 5px 10px;
+      font-weight: bold;
+      border-radius: 4px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <video id="video" controls autoplay></video>
+
+  <h2>Somoy TV Live</h2>
+  <div class="video-container">
+    <div class="live-badge">LIVE</div>
+    <video id="video" controls autoplay></video>
+  </div>
 
   <script>
     const video = document.getElementById('video');
-    const videoSrc = "https://live.tsports.com/mobile_hls/tsports_live_2/playlist.m3u8";
+    const videoSrc = "https://live.amarhost.com:19360/Somoy/Somoy.m3u8"; // এখানেই অন্য লিংক বসাতে পারো
 
     if (Hls.isSupported()) {
       const hls = new Hls();
@@ -44,8 +64,9 @@
         video.play();
       });
     } else {
-      alert("তোমার ব্রাউজার এই লাইভ স্ট্রিম সাপোর্ট করে না। VLC প্লেয়ার দিয়ে চেষ্টা করো।");
+      alert("তোমার ব্রাউজার লাইভ স্ট্রিম সাপোর্ট করে না। VLC প্লেয়ার দিয়ে চেষ্টা করো।");
     }
   </script>
+
 </body>
 </html>
