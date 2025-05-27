@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>T Sports Live</title>
+  <title>T Sports Live Stream</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    body { background-color: #000; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    video { width: 90%; max-width: 720px; border: 4px solid green; border-radius: 10px; }
+    body {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #fff;
+      font-family: sans-serif;
+    }
+    video {
+      width: 90%;
+      max-width: 800px;
+      border: 5px solid #00ff00;
+      border-radius: 12px;
+      background: #000;
+    }
   </style>
 </head>
 <body>
@@ -28,6 +43,8 @@
       video.addEventListener('loadedmetadata', function () {
         video.play();
       });
+    } else {
+      alert("তোমার ব্রাউজার এই লাইভ স্ট্রিম সাপোর্ট করে না। VLC প্লেয়ার দিয়ে চেষ্টা করো।");
     }
   </script>
 </body>
