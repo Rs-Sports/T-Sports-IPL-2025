@@ -1,32 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>LIVE Stream</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <meta charset="UTF-8" />
+  <title>Play m3u8 with CORS Proxy</title>
+  <style>
+    body { background: #000; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    video { width: 90vw; height: auto; }
+  </style>
 </head>
-<body style="margin:0; background:#000; display:flex; justify-content:center; align-items:center; height:100vh;">
+<body>
+  <video id="video" controls autoplay></video>
 
-  <video id="video" controls autoplay style="width:90%; max-width:800px; border:2px solid green;"></video>
-
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
-    var video = document.getElementById('video');
-    var videoSrc = 'https://m3.merichunidya.com:999/hls/star1in.m3u8?md5=3TmcYsZW-j1w054Y02GP3A&expires=1748339393';
+    const video = document.getElementById('video');
 
     if (Hls.isSupported()) {
-      var hls = new Hls();
+      const hls = new Hls();
+
+      // তোমার আসল m3u8 URL এর আগে নিচের CORS Proxy URL যোগ করো
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      const videoSrc = proxyUrl + 'https://m3.merichunidya.com:999/hls/star1in.m3u8?md5=3TmcYsZW-j1w054Y02GP3A&expires=1748339393';
+
       hls.loadSource(videoSrc);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
         video.play();
       });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = videoSrc;
+      // Safari ব্রাউজার সরাসরি প্লে করতে পারলে
+      video.src = 'https://m3.merichunidya.com:999/hls/star1in.m3u8?md5=3TmcYsZW-j1w054Y02GP3A&expires=1748339393';
       video.addEventListener('loadedmetadata', function () {
         video.play();
       });
+    } else {
+      alert('Your browser does not support HLS playback.');
     }
   </script>
-
 </body>
 </html>
