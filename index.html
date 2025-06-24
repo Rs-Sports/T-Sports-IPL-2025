@@ -25,8 +25,7 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    th,
-    td {
+    th, td {
       border: 1px solid #ddd;
       padding: 12px 15px;
       text-align: left;
@@ -95,29 +94,6 @@
       align-items: center;
     }
 
-    .today-badge {
-      background-color: #00cc66;
-      color: white;
-      font-size: 12px;
-      padding: 3px 8px;
-      border-radius: 12px;
-      margin-left: 8px;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(0, 204, 102, 0.6);
-      }
-      70% {
-        box-shadow: 0 0 0 10px rgba(0, 204, 102, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(0, 204, 102, 0);
-      }
-    }
-
-    /* লাল এন্টিকেটর (indicator) */
     .indicator-dot {
       display: inline-block;
       width: 10px;
@@ -129,19 +105,12 @@
     }
 
     @keyframes blink {
-      0%,
-      100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.4;
-      }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
     @media (max-width: 640px) {
-      table,
-      th,
-      td {
+      table, th, td {
         font-size: 14px;
       }
       .profile-img {
@@ -204,6 +173,7 @@
       const status = loadStatus();
       const today = getTodayDay();
       tbody.innerHTML = '';
+      let reminderShown = false;
 
       tasks.forEach((task, index) => {
         const tr = document.createElement('tr');
@@ -218,7 +188,6 @@
           <td class="name-cell">
             <img src="${task.img}" alt="${task.person}" class="profile-img" />
             ${task.person}
-            ${isToday ? '<span class="today-badge">আজকের দায়িত্ব</span>' : ''}
             ${isToday && !isChecked ? '<span class="indicator-dot"></span>' : ''}
           </td>
           <td style="text-align:center;">
@@ -229,9 +198,17 @@
           </td>
         `;
         tbody.appendChild(tr);
+
+        // 🔔 রিমাইন্ডার
+        if (isToday && !isChecked && !reminderShown) {
+          setTimeout(() => {
+            alert(`⚠️ আজ ${task.person}-এর দায়িত্ব! কিন্তু এখনও কাজ শেষ হয়নি।`);
+          }, 500);
+          reminderShown = true;
+        }
       });
 
-      resetBtn.disabled = !allTasksCompleted(loadStatus());
+      resetBtn.disabled = !allTasksCompleted(status);
     }
 
     tbody.addEventListener('change', (e) => {
