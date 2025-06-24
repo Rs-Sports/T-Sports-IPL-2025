@@ -5,15 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>দৈনিক কাজের ট্র্যাকার</title>
   <style>
-    body { font-family: 'SolaimanLipi', Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-    h1 { text-align: center; margin-bottom: 15px; }
-    table { width: 100%; max-width: 700px; margin: auto; border-collapse: collapse; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    th, td { border: 1px solid #ddd; padding: 12px 15px; text-align: left; vertical-align: middle; }
-    th { background: #4CAF50; color: white; }
-    tr.completed td { text-decoration: line-through; color: gray; }
-    tr.today { background: #ffffcc; font-weight: bold; }
-    input[type="checkbox"]:disabled { cursor: not-allowed; opacity: 0.5; }
-    input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+    body {
+      font-family: 'SolaimanLipi', Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 700px;
+      margin: auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 12px 15px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #4caf50;
+      color: white;
+    }
+
+    tr.completed td {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    tr.today {
+      background: #ffffcc;
+      font-weight: bold;
+    }
+
+    input[type='checkbox']:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    input[type='checkbox'] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
     button {
       margin: 20px auto;
       display: block;
@@ -25,11 +70,16 @@
       border: none;
       border-radius: 5px;
     }
+
     button:disabled {
       background: #999;
       cursor: not-allowed;
     }
-    button:hover:enabled { background: #c9302c; }
+
+    button:hover:enabled {
+      background: #c9302c;
+    }
+
     .profile-img {
       width: 40px;
       height: 40px;
@@ -39,124 +89,175 @@
       margin-right: 8px;
       vertical-align: middle;
     }
+
     .name-cell {
       display: flex;
       align-items: center;
     }
+
+    .today-badge {
+      background-color: #00cc66;
+      color: white;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      margin-left: 8px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(0, 204, 102, 0.6);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(0, 204, 102, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 204, 102, 0);
+      }
+    }
+
+    /* লাল এন্টিকেটর (indicator) */
+    .indicator-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      border-radius: 50%;
+      margin-left: 8px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.4;
+      }
+    }
+
     @media (max-width: 640px) {
-      table, th, td { font-size: 14px; }
-      .profile-img { width: 30px; height: 30px; }
+      table,
+      th,
+      td {
+        font-size: 14px;
+      }
+      .profile-img {
+        width: 30px;
+        height: 30px;
+      }
     }
   </style>
 </head>
 <body>
+  <h1>দৈনিক কাজের ট্র্যাকার</h1>
 
-<h1>দৈনিক কাজের ট্র্যাকার</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>দিন</th>
+        <th>কাজের দায়িত্ব</th>
+        <th style="text-align: center;">✅ কাজ শেষ?</th>
+      </tr>
+    </thead>
+    <tbody id="taskTableBody"></tbody>
+  </table>
 
-<table>
-  <thead>
-    <tr>
-      <th>দিন</th>
-      <th>কাজের দায়িত্ব</th>
-      <th style="text-align:center;">✅ কাজ শেষ?</th>
-    </tr>
-  </thead>
-  <tbody id="taskTableBody"></tbody>
-</table>
+  <button id="resetBtn">🔁 নতুন করে শুরু করো (সব টিক মুছে ফেলো)</button>
 
-<button id="resetBtn">🔁 নতুন করে শুরু করো (সব টিক মুছে ফেলো)</button>
+  <script>
+    const tasks = [
+      { day: 'শনিবার', person: 'আবুবকর', img: 'https://via.placeholder.com/100x100?text=A' },
+      { day: 'রবিবার', person: 'সাদ্দাম', img: 'https://via.placeholder.com/100x100?text=S' },
+      { day: 'সোমবার', person: 'সজীব', img: 'https://via.placeholder.com/100x100?text=SJ' },
+      { day: 'মঙ্গলবার', person: 'রমিম', img: 'https://via.placeholder.com/100x100?text=R' },
+      { day: 'বুধবার', person: 'কালাম ভাই', img: 'https://via.placeholder.com/100x100?text=K' },
+      { day: 'বৃহস্পতিবার', person: 'সাইফুল + ইউসুফ ভাই', img: 'https://via.placeholder.com/100x100?text=SY' },
+      { day: 'শুক্রবার', person: 'দিনু ভাই', img: 'https://via.placeholder.com/100x100?text=D' },
+    ];
 
-<script>
-  // ✅ নাম + ইমেজ লিস্ট
-  const tasks = [
-    { day: 'শনিবার', person: 'আবুবকর', img: 'https://via.placeholder.com/100x100?text=A' },
-    { day: 'রবিবার', person: 'সাদ্দাম', img: 'https://via.placeholder.com/100x100?text=S' },
-    { day: 'সোমবার', person: 'সজীব', img: 'https://via.placeholder.com/100x100?text=SJ' },
-    { day: 'মঙ্গলবার', person: 'রমিম', img: 'https://imgur.com/wly7uIO.jpeg' },
-    { day: 'বুধবার', person: 'কালাম ভাই', img: 'https://via.placeholder.com/100x100?text=K' },
-    { day: 'বৃহস্পতিবার', person: 'সাইফুল + ইউসুফ ভাই', img: 'https://via.placeholder.com/100x100?text=SY' },
-    { day: 'শুক্রবার', person: 'দিনু ভাই', img: 'https://via.placeholder.com/100x100?text=D' },
-  ];
+    const tbody = document.getElementById('taskTableBody');
+    const resetBtn = document.getElementById('resetBtn');
 
-  const tbody = document.getElementById('taskTableBody');
-  const resetBtn = document.getElementById('resetBtn');
+    function loadStatus() {
+      const status = localStorage.getItem('dailyTaskStatus');
+      return status ? JSON.parse(status) : {};
+    }
 
-  function loadStatus() {
-    const status = localStorage.getItem('dailyTaskStatus');
-    return status ? JSON.parse(status) : {};
-  }
+    function saveStatus(status) {
+      localStorage.setItem('dailyTaskStatus', JSON.stringify(status));
+    }
 
-  function saveStatus(status) {
-    localStorage.setItem('dailyTaskStatus', JSON.stringify(status));
-  }
+    function getTodayDay() {
+      const daysBn = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+      const todayIndex = new Date().getDay();
+      return daysBn[todayIndex];
+    }
 
-  function getTodayDay() {
-    const daysBn = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
-    const todayIndex = new Date().getDay(); // 0 = রবিবার ... 6 = শনিবার
-    return daysBn[todayIndex];
-  }
+    function allTasksCompleted(status) {
+      return tasks.every((_, index) => status[index]);
+    }
 
-  function allTasksCompleted(status) {
-    return tasks.every((_, index) => status[index]);
-  }
+    function renderTable() {
+      const status = loadStatus();
+      const today = getTodayDay();
+      tbody.innerHTML = '';
 
-  function renderTable() {
-    const status = loadStatus();
-    const today = getTodayDay();
-    tbody.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const tr = document.createElement('tr');
+        const isToday = task.day === today;
+        const isChecked = status[index];
 
-    tasks.forEach((task, index) => {
-      const tr = document.createElement('tr');
-      const isToday = task.day === today;
-      const isChecked = status[index];
+        if (isChecked) tr.classList.add('completed');
+        if (isToday) tr.classList.add('today');
 
-      if (isChecked) tr.classList.add('completed');
-      if (isToday) tr.classList.add('today');
+        tr.innerHTML = `
+          <td>${task.day}</td>
+          <td class="name-cell">
+            <img src="${task.img}" alt="${task.person}" class="profile-img" />
+            ${task.person}
+            ${isToday ? '<span class="today-badge">আজকের দায়িত্ব</span>' : ''}
+            ${isToday && !isChecked ? '<span class="indicator-dot"></span>' : ''}
+          </td>
+          <td style="text-align:center;">
+            <input type="checkbox"
+              ${isChecked ? 'checked' : ''}
+              ${isToday ? '' : 'disabled'}
+              data-index="${index}">
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
 
-      tr.innerHTML = `
-        <td>${task.day}</td>
-        <td class="name-cell">
-          <img src="${task.img}" alt="${task.person}" class="profile-img" />
-          ${task.person}
-        </td>
-        <td style="text-align:center;">
-          <input type="checkbox"
-            ${isChecked ? 'checked' : ''}
-            ${isToday ? '' : 'disabled'}
-            data-index="${index}">
-        </td>
-      `;
-      tbody.appendChild(tr);
+      resetBtn.disabled = !allTasksCompleted(loadStatus());
+    }
+
+    tbody.addEventListener('change', (e) => {
+      if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+        const index = e.target.getAttribute('data-index');
+        const status = loadStatus();
+        status[index] = e.target.checked;
+        saveStatus(status);
+        renderTable();
+      }
     });
 
-    resetBtn.disabled = !allTasksCompleted(loadStatus());
-  }
-
-  tbody.addEventListener('change', (e) => {
-    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
-      const index = e.target.getAttribute('data-index');
+    resetBtn.addEventListener('click', () => {
       const status = loadStatus();
-      status[index] = e.target.checked;
-      saveStatus(status);
-      renderTable();
-    }
-  });
+      if (!allTasksCompleted(status)) {
+        alert('❌ দয়া করে প্রথমে সব কাজ টিক দিন, তারপর রিসেট করুন।');
+        return;
+      }
 
-  resetBtn.addEventListener('click', () => {
-    const status = loadStatus();
-    if (!allTasksCompleted(status)) {
-      alert('❌ দয়া করে প্রথমে সব কাজ টিক দিন, তারপর রিসেট করুন।');
-      return;
-    }
+      if (confirm('✅ সব কাজ শেষ হয়েছে! নতুন করে শুরু করতে চান?')) {
+        localStorage.removeItem('dailyTaskStatus');
+        renderTable();
+      }
+    });
 
-    if (confirm('✅ সব কাজ শেষ হয়েছে! নতুন করে শুরু করতে চান?')) {
-      localStorage.removeItem('dailyTaskStatus');
-      renderTable();
-    }
-  });
-
-  renderTable();
-</script>
-
+    renderTable();
+  </script>
 </body>
 </html>
